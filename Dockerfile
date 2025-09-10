@@ -1,17 +1,12 @@
-
-FROM ubuntu:latest AS build
-
-RUN apt-get update
-RUN apt-get install openjdk-21-jdk wget -y
+# Etapa de build
+FROM maven:3.9.6-eclipse-temurin-21 AS build
+WORKDIR /app
 COPY . .
+RUN mvn clean package -DskipTests
 
-RUN apt-get install maven -y
-RUN mvn clean install
-
-FROM openjdk:21-jre-slim
-
+# Etapa de execução
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+COPY --from=build /app/target/api-message-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8080
-
-COPY --fron=build target/api-message-0.0.1-SNAPSHOT.jar app.jar
-
-ENTREYPOINT [ "java","-jar","app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
