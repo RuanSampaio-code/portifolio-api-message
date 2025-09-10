@@ -1,11 +1,17 @@
-# Usa uma imagem base do Java 21
-FROM eclipse-temurin:21-jre
 
-WORKDIR /app
+FROM ubuntu:latest AS build
 
-# Copia o jar gerado pelo Maven
-COPY target/api-message-*.jar app.jar
+RUN apt-get update
+RUN apt-get install openjdk-21-jdk wget -y
+COPY . .
+
+RUN apt-get install maven -y
+RUN mvn clean install
+
+FROM openjdk:21-jre-slim
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+COPY --fron=build target/api-message-0.0.1-SNAPSHOT.jar app.jar
+
+ENTREYPOINT [ "java","-jar","app.jar"]
