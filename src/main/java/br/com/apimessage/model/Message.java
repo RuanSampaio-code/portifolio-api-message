@@ -1,7 +1,10 @@
 package br.com.apimessage.model;
 
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.LocalDateTime;
 
 @Document(collection = "messages")
 public class Message {
@@ -15,11 +18,15 @@ public class Message {
 
     private String message;
 
+    @CreatedDate // Anotação para data de criação automática
+    private LocalDateTime createdAt;
+
     public Message(String id, String name, String email, String message) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.message = message;
+        this.createdAt = LocalDateTime.now();
     }
 
     public Message() {
@@ -55,5 +62,13 @@ public class Message {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }
