@@ -30,11 +30,13 @@ class MessageServiceTest {
         msg1.setName("John Doe");
         msg1.setEmail("a");
         msg1.setMessage("Hello");
+        msg1.setCreatedAt(null);
 
         Message msg2 = new Message();
         msg2.setName("Jane Doe");
         msg2.setEmail("b");
         msg2.setMessage("Hi");
+        msg2.setCreatedAt(null);
 
         List<Message> messages = Arrays.asList(msg1, msg2);
 
@@ -50,12 +52,13 @@ class MessageServiceTest {
 
     @Test
     void sendMessage() {
-        MessageDTO dto = new MessageDTO("John Doe", "a", "Hello");
+        MessageDTO dto = new MessageDTO("John Doe", "a", "Hello", null);
 
         Message savedMessage = new Message();
         savedMessage.setName(dto.name());
         savedMessage.setEmail(dto.email());
         savedMessage.setMessage(dto.message());
+        savedMessage.setCreatedAt(dto.createdAt());
 
         when(messageRepository.save(any(Message.class))).thenReturn(savedMessage);
 

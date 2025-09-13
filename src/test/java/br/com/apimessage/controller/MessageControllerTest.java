@@ -27,8 +27,8 @@ class MessageControllerTest {
     @Test
     void getMessages() {
 
-        MessageDTO msg1 = new MessageDTO("John Doe", "a", "Hello");
-        MessageDTO msg2 = new MessageDTO("Jane Doe", "b", "Hi");
+        MessageDTO msg1 = new MessageDTO("John Doe", "a", "Hello", null);
+        MessageDTO msg2 = new MessageDTO("Jane Doe", "b", "Hi", null);
         List<MessageDTO> messages = Arrays.asList(msg1, msg2);
 
         when(messageService.getMessage()).thenReturn(messages);
@@ -45,8 +45,8 @@ class MessageControllerTest {
     @Test
     void postMessage() {
 
-        MessageDTO msg1 = new MessageDTO("John Doe", "a", "Hello");
-        MessageDTO msg2 = new MessageDTO("Jane Doe", "b", "Hi");
+        MessageDTO msg1 = new MessageDTO("John Doe", "a", "Hello", null);
+        MessageDTO msg2 = new MessageDTO("Jane Doe", "b", "Hi", null);
         List<MessageDTO> messages = Arrays.asList(msg1, msg2);
 
         when(messageService.getMessage()).thenReturn(messages);
