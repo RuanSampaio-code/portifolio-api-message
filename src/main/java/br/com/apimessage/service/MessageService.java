@@ -23,7 +23,8 @@ public class MessageService {
                 .map(message -> new MessageDTO(
                         message.getName(),
                         message.getEmail(),
-                        message.getMessage()
+                        message.getMessage(),
+                        message.getCreatedAt()
                 ))
                 .toList();
 
@@ -38,6 +39,7 @@ public class MessageService {
         message.setName(messageDTO.name());
         message.setEmail(messageDTO.email());
         message.setMessage(messageDTO.message());
+        message.setCreatedAt(messageDTO.createdAt());
 
         messageRepository.save(message);
 
