@@ -1,11 +1,13 @@
 package br.com.apimessage.controller;
 
 import br.com.apimessage.dto.MessageDTO;
+import br.com.apimessage.dto.MessageResponseDTO;
 import br.com.apimessage.service.MessageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,35 +28,30 @@ class MessageControllerTest {
 
     @Test
     void getMessages() {
-
-        MessageDTO msg1 = new MessageDTO("John Doe", "a", "Hello", null);
-        MessageDTO msg2 = new MessageDTO("Jane Doe", "b", "Hi", null);
-        List<MessageDTO> messages = Arrays.asList(msg1, msg2);
+        MessageResponseDTO msg1 = new MessageResponseDTO("1", "John Doe", "a", "Hello", LocalDateTime.now());
+        MessageResponseDTO msg2 = new MessageResponseDTO("2", "Jane Doe", "b", "Hi", LocalDateTime.now());
+        List<MessageResponseDTO> messages = Arrays.asList(msg1, msg2);
 
         when(messageService.getMessage()).thenReturn(messages);
 
-        ResponseEntity<List<MessageDTO>> response = messageController.getMessages();
+        ResponseEntity<List<MessageResponseDTO>> response = messageController.getMessages();
 
         assertEquals(200, response.getStatusCodeValue());
         assertEquals(messages, response.getBody());
         verify(messageService, times(1)).getMessage();
-
-
     }
 
     @Test
     void postMessage() {
+        MessageDTO request = new MessageDTO("John Doe", "a", "Hello");
+        MessageResponseDTO responseDTO = new MessageResponseDTO("1", "John Doe", "a", "Hello", LocalDateTime.now());
 
-        MessageDTO msg1 = new MessageDTO("John Doe", "a", "Hello", null);
-        MessageDTO msg2 = new MessageDTO("Jane Doe", "b", "Hi", null);
-        List<MessageDTO> messages = Arrays.asList(msg1, msg2);
+        when(messageService.sendMessage(request)).thenReturn(responseDTO);
 
-        when(messageService.getMessage()).thenReturn(messages);
+        ResponseEntity<MessageResponseDTO> response = messageController.postMessage(request);
 
-        ResponseEntity<List<MessageDTO>> response = messageController.getMessages();
-
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(messages, response.getBody());
-        verify(messageService, times(1)).getMessage();
+        assertEquals(201, response.getStatusCodeValue());
+        assertEquals(responseDTO, response.getBody());
+        verify(messageService, times(1)).sendMessage(request);
     }
 }

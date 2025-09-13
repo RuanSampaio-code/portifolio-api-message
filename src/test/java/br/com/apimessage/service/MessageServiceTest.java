@@ -1,6 +1,7 @@
 package br.com.apimessage.service;
 
 import br.com.apimessage.dto.MessageDTO;
+import br.com.apimessage.dto.MessageResponseDTO;
 import br.com.apimessage.model.Message;
 import br.com.apimessage.repository.MessageRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,19 +31,17 @@ class MessageServiceTest {
         msg1.setName("John Doe");
         msg1.setEmail("a");
         msg1.setMessage("Hello");
-        msg1.setCreatedAt(null);
 
         Message msg2 = new Message();
         msg2.setName("Jane Doe");
         msg2.setEmail("b");
         msg2.setMessage("Hi");
-        msg2.setCreatedAt(null);
 
         List<Message> messages = Arrays.asList(msg1, msg2);
 
         when(messageRepository.findAll()).thenReturn(messages);
 
-        List<MessageDTO> result = messageService.getMessage();
+        List<MessageResponseDTO> result = messageService.getMessage();
 
         assertEquals(2, result.size());
         assertEquals("John Doe", result.get(0).name());
@@ -52,19 +51,20 @@ class MessageServiceTest {
 
     @Test
     void sendMessage() {
-        MessageDTO dto = new MessageDTO("John Doe", "a", "Hello", null);
+        MessageDTO dto = new MessageDTO("John Doe", "a", "Hello");
 
         Message savedMessage = new Message();
         savedMessage.setName(dto.name());
         savedMessage.setEmail(dto.email());
         savedMessage.setMessage(dto.message());
-        savedMessage.setCreatedAt(dto.createdAt());
 
         when(messageRepository.save(any(Message.class))).thenReturn(savedMessage);
 
-        MessageDTO result = messageService.sendMessage(dto);
+        MessageResponseDTO result = messageService.sendMessage(dto);
 
-        assertEquals(dto, result);
+        assertEquals(dto.name(), result.name());
+        assertEquals(dto.email(), result.email());
+        assertEquals(dto.message(), result.message());
         verify(messageRepository, times(1)).save(any(Message.class));
     }
 }

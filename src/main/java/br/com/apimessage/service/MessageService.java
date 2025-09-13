@@ -1,6 +1,7 @@
 package br.com.apimessage.service;
 
 import br.com.apimessage.dto.MessageDTO;
+import br.com.apimessage.dto.MessageResponseDTO;
 import br.com.apimessage.model.Message;
 import br.com.apimessage.repository.MessageRepository;
 import org.springframework.stereotype.Service;
@@ -16,33 +17,39 @@ public class MessageService {
         this.messageRepository = messageRepository;
     }
 
-    public List<MessageDTO> getMessage() {
+    // Este método agora retorna uma lista do DTO de resposta
+    public List<MessageResponseDTO> getMessage() {
         List<Message> messages = messageRepository.findAll();
 
-        List<MessageDTO> messageDTOs = messages.stream()
-                .map(message -> new MessageDTO(
+        return messages.stream()
+                .map(message -> new MessageResponseDTO(
+                        message.getId(),
                         message.getName(),
                         message.getEmail(),
                         message.getMessage(),
-                        message.getCreatedAt()
+                        message.getCreatedAt() // Agora incluindo a data
                 ))
                 .toList();
-
-        return messageDTOs;
-
-
-
     }
 
-    public MessageDTO sendMessage(MessageDTO messageDTO) {
+    // Este método agora retorna o DTO de resposta
+    public MessageResponseDTO sendMessage(MessageDTO messageDTO) {
         Message message = new Message();
         message.setName(messageDTO.name());
         message.setEmail(messageDTO.email());
         message.setMessage(messageDTO.message());
-        message.setCreatedAt(messageDTO.createdAt());
 
-        messageRepository.save(message);
+        // Salve a entidade no banco. A variável 'messageSalva'
+        // conterá o objeto completo, com ID e createdAt.
+        Message messageSalva = messageRepository.save(message);
 
-        return messageDTO;
+        // Crie e retorne um NOVO DTO com os dados que foram salvos
+        return new MessageResponseDTO(
+                messageSalva.getId(),
+                messageSalva.getName(),
+                messageSalva.getEmail(),
+                messageSalva.getMessage(),
+                messageSalva.getCreatedAt()
+        );
     }
 }

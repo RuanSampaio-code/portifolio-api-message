@@ -26,7 +26,6 @@ public class Message {
         this.name = name;
         this.email = email;
         this.message = message;
-        this.createdAt = LocalDateTime.now();
     }
 
     public Message() {
